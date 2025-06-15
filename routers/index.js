@@ -1,16 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const axios = require("axios");
 
-const spotifyApi = require("../helper/spotifyApiToken.js");
+const axios = require("axios");
+const { spotifyApi, retrieveSpotifyApiToken } = require("../helper/spotifyApiToken.js");
 
 router.get("/", async (request, response) => {
     // Always set `pageName`
     response.locals.headTitle.pageName = "Home";
 
-    return response.render("./index.ejs", {
-        pageName: response.locals.headTitle.pageName,
-    });
+    // Always get/refresh Spotify API token
+    try {
+        await retrieveSpotifyApiToken();
+        return response.render("./index.ejs", {
+            pageName: response.locals.headTitle.pageName,
+        });
+    } catch (error) {
+        return response.redirect("/?error=unableToGetOrRefreshSpotifyToken");
+    }
 });
 
 router.post("/recommendations", (request, response) => {
@@ -23,12 +29,12 @@ router.post("/recommendations", (request, response) => {
             .split("?si=")[0];
         // console.log(`[!]\n${spotify_trackID}\n[!]`);
         return response.redirect(`/recommendations/${spotify_trackID}`);
-    } catch (err) {
+    } catch (error) {
         /**
          * TODO
          * Send to home or error page
          */
-        console.error(`[!]\nIn index.js > .post("/recommendations"):\n${err}\n[!]`);
+        console.error(`[!]\nIn ./routers/index.js > .post("/recommendations"):\n${err}\n[!]`);
         return response.redirect("/?error=invalidLink");
     }
 });
@@ -38,6 +44,9 @@ router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
     response.locals.headTitle.pageName = "Recommendations";
 
     try {
+        // Always get/refresh Spotify API token
+        await retrieveSpotifyApiToken();
+
         // ----- Spotify API
         let spotify_trackID = request.params.spotify_trackID;
         let spotify_trackData = await spotifyApi.getTrack(spotify_trackID);
@@ -104,12 +113,17 @@ router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
             spotify_trackDetails: spotify_trackData.body,
             lastFm_genreTags: lastFm_genreTags,
         });
-    } catch (err) {
+    } catch (error) {
         /**
          * TODO
          * Send to home or error page
          */
-        console.error(`[!]\nIn index.js > .get("/recommendations/:trackID"):\n${err}\n[!]`);
+        console.error(`[!]\nIn ./routers/index.js > .get("/recommendations/:trackID"):\n${error}\n[!]`);
+        // When error is due to Spotify API token
+        if (error.message == "unableToRetrieveSpotifyApiToken") {
+            return response.redirect("/?error=unableToRetrieveSpotifyApiToken");
+        }
+        // When error is due to Last.fm/Axios
         return response.redirect("/?error=unableToRetrieveTrackData");
     }
 });

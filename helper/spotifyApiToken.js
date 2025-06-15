@@ -6,14 +6,14 @@ const spotifyApi = new SpotifyWebApi({
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
-spotifyApi
-    .clientCredentialsGrant()
-    .then((data) => {
+async function retrieveSpotifyApiToken() {
+    try {
+        let data = await spotifyApi.clientCredentialsGrant();
         spotifyApi.setAccessToken(data.body.access_token);
-        // console.log(`[!]\nSpotify API token granted, expires in ${data.body.expires_in} seconds\n[!]`);
-    })
-    .catch((err) => {
-        console.error(`[!]\nIn server.js > spotifyApi:\n${err}\n[!]`);
-    });
+    } catch (err) {
+        console.error(`[!]\nIn ./helper/spotifyApiToken.js > spotifyApi:\n${err}\n[!]`);
+        throw new Error("unableToRetrieveSpotifyApiToken"); // Send `err` to Express to inform user
+    }
+}
 
-module.exports = spotifyApi;
+module.exports = { spotifyApi, retrieveSpotifyApiToken };
