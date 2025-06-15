@@ -34,3 +34,6 @@ app.use("/", indexRouter); // No prefixes in this case
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
+// For Vercel to work during deployment/hosting
+module.exports = app;
