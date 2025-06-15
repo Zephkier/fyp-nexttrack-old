@@ -16,7 +16,7 @@ spotifyApi
     .clientCredentialsGrant()
     .then((data) => {
         spotifyApi.setAccessToken(data.body.access_token);
-        console.log(`[!]\nSpotify API token granted, expires in ${data.body.expires_in} seconds\n[!]`);
+        // console.log(`[!]\nSpotify API token granted, expires in ${data.body.expires_in} seconds\n[!]`);
     })
     .catch((err) => {
         console.error(`[!]\nIn server.js > spotifyApi:\n${err}\n[!]`);
