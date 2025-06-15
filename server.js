@@ -1,16 +1,20 @@
 const express = require("express");
 const app = express();
-
 const port = 3000;
+
 const indexRouter = require("./routers/index.js");
 
 // Setup Express to use `.ejs` as default template engine
 // Now `response.render()` looks in `./views` directory for `.ejs` files by default
 app.set("view engine", "ejs");
 
-// Set location of static files (i.e. images, `.css`, `.js`)
-// Now the `.ejs` file > `<head>` > `<link href>` looks in `./public` directory by default
-app.use(express.static(`${__dirname}/public`));
+// // Set location of static (i.e. image, `.css`, `.js`) files
+// // Now the `.ejs` file > `<head>` > `<link href>` looks in `./public` directory by default
+// app.use(express.static(`${__dirname}/public`));
+
+// Set location of view (i.e. `.ejs`) files for Vercel to find
+// Also useful if this `server.js` file is ever in a different (i.e. non-root) directory
+app.set("views", `${__dirname}/views`);
 
 // To parse form submissions
 app.use(express.urlencoded({ extended: true }));
