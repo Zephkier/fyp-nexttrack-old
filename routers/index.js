@@ -49,7 +49,7 @@ router.get(`/recommendations/:spotify_trackID`, refreshSpotifyApiToken, async (r
     let artistName = null;
     let lastFm_genreTags = null;
 
-    // Spotify API
+    // Spotify API: Get track name and artist name
     try {
         spotify_trackData = await spotifyApi.getTrack(request.params.spotify_trackID);
         // return response.json(spotify_trackData.body); // Check
@@ -64,7 +64,7 @@ router.get(`/recommendations/:spotify_trackID`, refreshSpotifyApiToken, async (r
         return response.redirect("/?error=cannotRetrieveTrackDataFromSpotify");
     }
 
-    // Last.fm API
+    // Last.fm API: Get genre(s) or tag(s) as Last.fm calls it
     try {
         // JSON: /2.0/?method=track.getInfo&api_key=YOUR_API_KEY&artist=cher&track=believe&format=json
         /**

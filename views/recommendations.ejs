@@ -19,13 +19,9 @@
         <div class="submitted-track-details">
             <h3>Track's Details</h3>
             <ul>
+                <li>Name: <%= spotify_trackDetails.name %></li>
                 <li>
-                    <b>Name:</b>
-                    <%= spotify_trackDetails.name %>
-                </li>
-                <li>
-                    <b>Artist(s):</b>
-                    <% spotify_trackDetails.artists.forEach((artist, index) => { %>
+                    Artist(s): <% spotify_trackDetails.artists.forEach((artist, index) => { %>
                     <!-- Format -->
                     <% let comma_space = index == spotify_trackDetails.artists.length - 1 ? "" : ", " %>
                     <!-- Format -->
@@ -33,10 +29,7 @@
                     <!-- Format -->
                     <% }) %>
                 </li>
-                <li>
-                    <b>Release Date (YYYY-MM-DD):</b>
-                    <%= spotify_trackDetails.album.release_date %>
-                </li>
+                <li>Release Date (YYYY-MM-DD): <%= spotify_trackDetails.album.release_date %></li>
             </ul>
         </div>
 
@@ -53,6 +46,8 @@
                     <% }) %>
                 </ul>
 
+                <!-- TODO: Double-click to reset slider's value -->
+
                 <div class="similarity-slider">
                     <label for="similaritySlider" class="form-label">
                         <!-- Format -->
@@ -60,12 +55,43 @@
                     </label>
                     <input name="similaritySlider" id="similaritySlider" type="range" class="form-range" min="0" max="100" step="1" value="50" />
                 </div>
+
+                <div class="popularity-slider">
+                    <label for="popularitySlider" class="form-label">
+                        <!-- Format -->
+                        Popularity: <span id="popularitySliderValue"><%= spotify_trackDetails.popularity %></span> / 100
+                    </label>
+                    <input name="popularitySlider" id="popularitySlider" type="range" class="form-range" min="0" max="100" step="1" value="<%= spotify_trackDetails.popularity %>" />
+                </div>
             </div>
         </div>
 
         <div class="recommended-tracks">
             <h3>Recommended Tracks</h3>
-            <p>Lorem ipsum dolor sit amet.</p>
+
+            <!-- TODO: End-goal is to apply this part for each and every recommended track via a loop -->
+            <!-- For now, just focus on getting 1 (fake) "recommended track" to work -->
+
+            <p>Title: abc</p>
+            <p>Artist: def</p>
+            <p>
+                Listen at:
+                <button>Spotify</button>
+                <button>Apple Music</button>
+                <button>YouTube Music</button>
+            </p>
+            <p>
+                Music Video:
+                <br />*music video (either straight from YouTube, or the linked/embedded video on Last.fm's / Genius' page)*
+            </p>
+            <p>
+                Lyrics:
+                <br />*lyrics from Genius*
+            </p>
+            <p>
+                "About" / Wiki Section:
+                <br />*"about" section from Last.fm or Genius*
+            </p>
         </div>
 
         <script>
@@ -73,6 +99,11 @@
             let similaritySliderValue = document.getElementById("similaritySliderValue");
             similaritySlider.addEventListener("input", () => {
                 similaritySliderValue.textContent = similaritySlider.value;
+            });
+            let popularitySlider = document.getElementById("popularitySlider");
+            let popularitySliderValue = document.getElementById("popularitySliderValue");
+            popularitySlider.addEventListener("input", () => {
+                popularitySliderValue.textContent = popularitySlider.value;
             });
         </script>
     </body>
