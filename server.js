@@ -8,8 +8,8 @@ require("dotenv").config();
 const SpotifyWebApi = require("spotify-web-api-node");
 
 const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.CLIENT_ID, // Key MUST be named "clientId" and not things like "clientID"
-    clientSecret: process.env.CLIENT_SECRET,
+    clientId: process.env.SPOTIFY_CLIENT_ID, // Key MUST be named "clientId" and not things like "clientID"
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
 spotifyApi

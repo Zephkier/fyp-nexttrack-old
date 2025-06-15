@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
 router.get("/", async (request, response) => {
     // Always set `pageName`
@@ -18,8 +19,7 @@ router.post("/recommendations", (request, response) => {
         let trackID = request.body.submittedTrackLink // Format
             .split("track/")[1]
             .split("?si=")[0];
-        // console.log(`[!]\nconsole.logged:\n${trackID}\n[!]`);
-
+        // console.log(`[!]\n${trackID}\n[!]`);
         return response.redirect(`/recommendations/${trackID}`);
     } catch (err) {
         // TODO: Send to home/error page
@@ -33,52 +33,67 @@ router.get(`/recommendations/:trackID`, async (request, response) => {
     response.locals.headTitle.pageName = "Recommendations";
 
     try {
+        // ----- Spotify API
         let trackID = request.params.trackID;
         let trackData = await response.locals.spotifyApi.getTrack(trackID);
-        // return response.json(trackData.body); // Works better than `console.log()` as there are many key-value pairs
+        // return response.json(trackData.body); // Better than `console.log()`
 
-        // /**
-        //  * FIXME: i ACTUALLY cannot get audio features and other data due to Spotify API changes...
-        //  * https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api
-        //  * https://www.reddit.com/r/spotifyapi/comments/1h1o2m9/spotify_api_changes/
-        //  *
-        //  * alternatives:
-        //  * - metadata-based recommendations
-        //  * - trying out other APIs (i.e. genius, last.fm)
-        //  * - using datasets
-        //  *   - https://www.kaggle.com/datasets/zaheenhamidani/ultimate-spotify-tracks-db
-        //  *   - https://github.com/spotipy-dev/spotipy
-        //  *   - http://millionsongdataset.com/index.html
-        //  */
-        // try {
-        //     return response.json(await response.locals.spotifyApi.getAudioFeaturesForTrack(trackID));
-        // } catch (audioFeaturesErr) {
-        //     console.error(`[!]\nIn index.js > .get("/recommendations/:trackID"):\n${audioFeaturesErr}\n[!]`);
-        //     /**
-        //      * [!]
-        //      * In index.js > .get("/recommendations/:trackID"):
-        //      * WebapiRegularError: An error occurred while communicating with Spotify's Web API.
-        //      * Details: undefined.
-        //      * [!]
-        //      */
-        // }
+        let trackName = trackData.body.name;
+        let artistName = trackData.body.artists[0].name;
 
-        // /**
-        //  * FIXME: at least get genres working like in wireframe, try to get one artist working for now...
-        //  *
-        //  * apparently a popular artist like Selena Gomez has NOTHING in the `genres` array,
-        //  * while The Beatles has only TWO items in theirs...
-        //  *
-        //  * yeah i think it's time to switch APIs.
-        //  * i'll still use Spotify for their user-submitted links, but then use other APIs to retrieve data.
-        //  */
-        // let artist = trackData.body.artists[0];
-        // let artistData = await response.locals.spotifyApi.getArtist(artist.id);
-        // return response.json(artistData);
+        // ----- Last.fm API
+        // JSON: /2.0/?method=track.getInfo&api_key=YOUR_API_KEY&artist=cher&track=believe&format=json
+        /**
+         * FIXME
+         * Track/Artist names with special characters (e.g. Florence + The Machine, AC/DC, W&W) does not work 100% of the time.
+         *
+         * TEST + (works)
+         * - Spotify link: Florence + The Machine - Dog Days Are Over @ https://open.spotify.com/track/456WNXWhDwYOSf5SpTuqxd?si=e9a5cc69ef9b4ffe
+         * - Last.fm site: https://www.last.fm/music/Florence+%252B+the+Machine/_/Dog+Days+Are+Over
+         * - `endpoint`:   http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=61aa236a275bc7ac487a704ec9dccf12&artist=Florence%20+%20The%20Machine&track=Dog%20Days%20Are%20Over&format=json
+         *
+         * TEST / (works)
+         * - Spotify link: AC/DC - Thunderstruck @ https://open.spotify.com/track/57bgtoPSgt236HzfBOd8kj?si=1f3b7d2fbc074a5e
+         * - Last.fm site: https://www.last.fm/music/AC%2FDC/_/Thunderstruck
+         * - `endpoint`:   http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=61aa236a275bc7ac487a704ec9dccf12&artist=AC/DC&track=Thunderstruck&format=json
+         *
+         * TEST & (does not work)
+         * - Spotify link: Dimitri Vegas & Like Mike - Thank You (Not So Bad) @ https://open.spotify.com/track/09CnYHiZ5jGT1wr1TXJ9Zt?si=68c00376f8e7456a
+         * - Last.fm site: https://www.last.fm/music/Dimitri+Vegas+&+Like+Mike/_/Thank+You+(Not+So+Bad)
+         * - `endpoint`:   http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=61aa236a275bc7ac487a704ec9dccf12&artist=Dimitri%20Vegas%20&%20Like%20Mike&track=Thank%20You%20(Not%20So%20Bad)&format=json
+         *
+         * I've tried:
+         * - `{artistName}`
+         * - `{encodeURI(artistName)}`
+         * - `{encodeURIComponent(artistName)}`
+         */
+        let baseUrl = "http://ws.audioscrobbler.com/2.0/";
+        let method = "track.getInfo";
+        let apiKey = process.env.LASTFM_API_KEY;
+        let endpoint = `${baseUrl}?method=${method}&api_key=${apiKey}&artist=${encodeURI(artistName)}&track=${encodeURI(trackName)}&format=json`;
+        // console.log(`[!]\n${endpoint}\n[!]`);
+
+        // Must assign individual Axios object properties, cannot do it all at once
+        // i.e. `let axiosResponse = await axios.get(endpoint);`
+        let axiosResponse = {};
+        await axios // Format
+            .get(endpoint)
+            .then(function (response) {
+                axiosResponse.data = response.data; // Main thing to focus on
+                axiosResponse.status = response.status;
+                axiosResponse.statusText = response.statusText;
+                axiosResponse.headers = response.headers;
+                axiosResponse.config = response.config;
+            });
+        // return response.json(axiosResponse); // Better than `console.log()`
+
+        let genreTags = axiosResponse.data.track.toptags.tag;
+        // return response.json(genreTags); // Better than `console.log()`
 
         return response.render("./recommendations.ejs", {
             pageName: response.locals.headTitle.pageName,
             submittedTrackDetails: trackData.body,
+            genreTags: genreTags,
         });
     } catch (err) {
         // TODO: Send to home/error page

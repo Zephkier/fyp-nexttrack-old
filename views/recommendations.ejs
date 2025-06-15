@@ -42,12 +42,38 @@
 
         <div class="customise-recommendations">
             <h3>Customise Your Recommendations</h3>
-            <p>Lorem ipsum dolor sit amet.</p>
+            <p>How similar do you want your recommendations to be?</p>
+            <div class="genre-tags">
+                <h4>Genres / Tags</h4>
+                <ul>
+                    <% genreTags.forEach((genreTag) => { %>
+                    <!-- Format -->
+                    <li><%= genreTag.name %></li>
+                    <!-- Format -->
+                    <% }) %>
+                </ul>
+
+                <div class="similarity-slider">
+                    <label for="similaritySlider" class="form-label">
+                        <!-- Format -->
+                        Similarity: <span id="similaritySliderValue">50</span>%
+                    </label>
+                    <input name="similaritySlider" id="similaritySlider" type="range" class="form-range" min="0" max="100" step="1" value="50" />
+                </div>
+            </div>
         </div>
 
         <div class="recommended-tracks">
             <h3>Recommended Tracks</h3>
             <p>Lorem ipsum dolor sit amet.</p>
         </div>
+
+        <script>
+            let similaritySlider = document.getElementById("similaritySlider");
+            let similaritySliderValue = document.getElementById("similaritySliderValue");
+            similaritySlider.addEventListener("input", () => {
+                similaritySliderValue.textContent = similaritySlider.value;
+            });
+        </script>
     </body>
 </html>
