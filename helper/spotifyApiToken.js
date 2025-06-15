@@ -12,7 +12,7 @@ async function retrieveSpotifyApiToken() {
         spotifyApi.setAccessToken(data.body.access_token);
     } catch (err) {
         console.error(`[!]\nIn ./helper/spotifyApiToken.js > spotifyApi:\n${err}\n[!]`);
-        throw new Error("unableToRetrieveSpotifyApiToken"); // Send `err` to Express to inform user
+        throw err; // Send `err` to Express to inform user
     }
 }
 
