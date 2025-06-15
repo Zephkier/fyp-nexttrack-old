@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
+const spotifyApi = require("../helper/spotifyApiToken.js");
+
 router.get("/", async (request, response) => {
     // Always set `pageName`
     response.locals.headTitle.pageName = "Home";
@@ -22,7 +24,10 @@ router.post("/recommendations", (request, response) => {
         // console.log(`[!]\n${spotify_trackID}\n[!]`);
         return response.redirect(`/recommendations/${spotify_trackID}`);
     } catch (err) {
-        // TODO: Send to home/error page
+        /**
+         * TODO
+         * Send to home or error page
+         */
         console.error(`[!]\nIn index.js > .post("/recommendations"):\n${err}\n[!]`);
         return response.redirect("/?error=invalidLink");
     }
@@ -35,7 +40,7 @@ router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
     try {
         // ----- Spotify API
         let spotify_trackID = request.params.spotify_trackID;
-        let spotify_trackData = await response.locals.spotifyApi.getTrack(spotify_trackID);
+        let spotify_trackData = await spotifyApi.getTrack(spotify_trackID);
         // return response.json(spotify_trackData.body); // Better than `console.log()`
 
         let trackName = spotify_trackData.body.name;
@@ -87,6 +92,10 @@ router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
             });
         // return response.json(lastFm_axiosResponse); // Better than `console.log()`
 
+        /**
+         * FIXME
+         * Handle cases when Spotify track is not available on Last.fm (e.g. "Playboi Carti" - Bando)
+         */
         let lastFm_genreTags = lastFm_axiosResponse.data.track.toptags.tag;
         // return response.json(lastFm_genreTags); // Better than `console.log()`
 
@@ -96,7 +105,10 @@ router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
             lastFm_genreTags: lastFm_genreTags,
         });
     } catch (err) {
-        // TODO: Send to home/error page
+        /**
+         * TODO
+         * Send to home or error page
+         */
         console.error(`[!]\nIn index.js > .get("/recommendations/:trackID"):\n${err}\n[!]`);
         return response.redirect("/?error=unableToRetrieveTrackData");
     }

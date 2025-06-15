@@ -4,24 +4,6 @@ const app = express();
 const port = 3000;
 const indexRouter = require("./routers/index.js");
 
-require("dotenv").config();
-const SpotifyWebApi = require("spotify-web-api-node");
-
-const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID, // Key MUST be named "clientId" and not things like "clientID"
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-});
-
-spotifyApi
-    .clientCredentialsGrant()
-    .then((data) => {
-        spotifyApi.setAccessToken(data.body.access_token);
-        // console.log(`[!]\nSpotify API token granted, expires in ${data.body.expires_in} seconds\n[!]`);
-    })
-    .catch((err) => {
-        console.error(`[!]\nIn server.js > spotifyApi:\n${err}\n[!]`);
-    });
-
 // Setup Express to use `.ejs` as default template engine
 // Now `response.render()` looks in `./views` directory for `.ejs` files by default
 app.set("view engine", "ejs");
@@ -35,7 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Set `response.locals` variables so it acts as "global" (not really but yeah) variables
 app.use((request, response, next) => {
-    response.locals.spotifyApi = spotifyApi;
     response.locals.headTitle = {
         pageName: "Unknown",
         remainder: " | Next Track",
