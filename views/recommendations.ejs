@@ -21,13 +21,13 @@
             <ul>
                 <li>
                     <b>Name:</b>
-                    <%= submittedTrackDetails.name %>
+                    <%= spotify_trackDetails.name %>
                 </li>
                 <li>
                     <b>Artist(s):</b>
-                    <% submittedTrackDetails.artists.forEach((artist, index) => { %>
+                    <% spotify_trackDetails.artists.forEach((artist, index) => { %>
                     <!-- Format -->
-                    <% let comma_space = index == submittedTrackDetails.artists.length - 1 ? "" : ", " %>
+                    <% let comma_space = index == spotify_trackDetails.artists.length - 1 ? "" : ", " %>
                     <!-- Format -->
                     <%= artist.name %><%= comma_space %>
                     <!-- Format -->
@@ -35,7 +35,7 @@
                 </li>
                 <li>
                     <b>Release Date (YYYY-MM-DD):</b>
-                    <%= submittedTrackDetails.album.release_date %>
+                    <%= spotify_trackDetails.album.release_date %>
                 </li>
             </ul>
         </div>
@@ -46,7 +46,7 @@
             <div class="genre-tags">
                 <h4>Genres / Tags</h4>
                 <ul>
-                    <% genreTags.forEach((genreTag) => { %>
+                    <% lastFm_genreTags.forEach((genreTag) => { %>
                     <!-- Format -->
                     <li><%= genreTag.name %></li>
                     <!-- Format -->

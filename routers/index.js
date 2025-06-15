@@ -16,11 +16,11 @@ router.post("/recommendations", (request, response) => {
         // Get track's ID from submitted track link
         // i.e. from: "https[colon]//open.spotify.com/track/6z7dQwXh9UJJl4wsWxexuI?si=308467749bd94d0d"
         //        to:                                      "6z7dQwXh9UJJl4wsWxexuI"
-        let trackID = request.body.submittedTrackLink // Format
+        let spotify_trackID = request.body.spotify_trackLink // Format
             .split("track/")[1]
             .split("?si=")[0];
-        // console.log(`[!]\n${trackID}\n[!]`);
-        return response.redirect(`/recommendations/${trackID}`);
+        // console.log(`[!]\n${spotify_trackID}\n[!]`);
+        return response.redirect(`/recommendations/${spotify_trackID}`);
     } catch (err) {
         // TODO: Send to home/error page
         console.error(`[!]\nIn index.js > .post("/recommendations"):\n${err}\n[!]`);
@@ -28,18 +28,18 @@ router.post("/recommendations", (request, response) => {
     }
 });
 
-router.get(`/recommendations/:trackID`, async (request, response) => {
+router.get(`/recommendations/:spotify_trackID`, async (request, response) => {
     // Always set `pageName`
     response.locals.headTitle.pageName = "Recommendations";
 
     try {
         // ----- Spotify API
-        let trackID = request.params.trackID;
-        let trackData = await response.locals.spotifyApi.getTrack(trackID);
-        // return response.json(trackData.body); // Better than `console.log()`
+        let spotify_trackID = request.params.spotify_trackID;
+        let spotify_trackData = await response.locals.spotifyApi.getTrack(spotify_trackID);
+        // return response.json(spotify_trackData.body); // Better than `console.log()`
 
-        let trackName = trackData.body.name;
-        let artistName = trackData.body.artists[0].name;
+        let trackName = spotify_trackData.body.name;
+        let artistName = spotify_trackData.body.artists[0].name;
 
         // ----- Last.fm API
         // JSON: /2.0/?method=track.getInfo&api_key=YOUR_API_KEY&artist=cher&track=believe&format=json
@@ -74,26 +74,26 @@ router.get(`/recommendations/:trackID`, async (request, response) => {
         // console.log(`[!]\n${endpoint}\n[!]`);
 
         // Must assign individual Axios object properties, cannot do it all at once
-        // i.e. `let axiosResponse = await axios.get(endpoint);`
-        let axiosResponse = {};
+        // i.e. `let lastFm_axiosResponse = await axios.get(endpoint);`
+        let lastFm_axiosResponse = {};
         await axios // Format
             .get(endpoint)
             .then(function (response) {
-                axiosResponse.data = response.data; // Main thing to focus on
-                axiosResponse.status = response.status;
-                axiosResponse.statusText = response.statusText;
-                axiosResponse.headers = response.headers;
-                axiosResponse.config = response.config;
+                lastFm_axiosResponse.data = response.data; // Main thing to focus on
+                lastFm_axiosResponse.status = response.status;
+                lastFm_axiosResponse.statusText = response.statusText;
+                lastFm_axiosResponse.headers = response.headers;
+                lastFm_axiosResponse.config = response.config;
             });
-        // return response.json(axiosResponse); // Better than `console.log()`
+        // return response.json(lastFm_axiosResponse); // Better than `console.log()`
 
-        let genreTags = axiosResponse.data.track.toptags.tag;
-        // return response.json(genreTags); // Better than `console.log()`
+        let lastFm_genreTags = lastFm_axiosResponse.data.track.toptags.tag;
+        // return response.json(lastFm_genreTags); // Better than `console.log()`
 
         return response.render("./recommendations.ejs", {
             pageName: response.locals.headTitle.pageName,
-            submittedTrackDetails: trackData.body,
-            genreTags: genreTags,
+            spotify_trackDetails: spotify_trackData.body,
+            lastFm_genreTags: lastFm_genreTags,
         });
     } catch (err) {
         // TODO: Send to home/error page

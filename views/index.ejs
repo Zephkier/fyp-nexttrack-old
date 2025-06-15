@@ -18,8 +18,8 @@
 
         <form method="POST" action="/recommendations">
             <div class="form-group">
-                <label for="submittedTrackLink">Submit your Spotify track link:</label>
-                <input name="submittedTrackLink" id="submittedTrackLink" type="text" class="form-control" placeholder="https://open.spotify.com/track/..." autocomplete="off" required />
+                <label for="spotify_trackLink">Submit your Spotify track link:</label>
+                <input name="spotify_trackLink" id="spotify_trackLink" type="text" class="form-control" placeholder="https://open.spotify.com/track/..." autocomplete="off" required />
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <button type="button" class="btn btn-warning" onclick="clearInput()">Clear</button>
             </div>
@@ -81,7 +81,7 @@
                 }
             };
             function clearInput() {
-                document.getElementById("submittedTrackLink").value = "";
+                document.getElementById("spotify_trackLink").value = "";
             }
         </script>
     </body>
