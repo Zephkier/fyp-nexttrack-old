@@ -45,21 +45,21 @@
                 <form id="customizeForm" autocomplete="off">
                     <button type="button" class="btn btn-primary mb-3" onclick="submitParams()">Update Recommendations</button>
 
-                    <h4>Genres / Tags</h4>
-                    <span>Current: </span>
-                    <ul>
-                        <% if (lastFm_genreTags.length == 0) { %>
-                        <li><i>None</i></li>
-                        <% } else { %>
-                        <!-- Format -->
-                        <% lastFm_genreTags.forEach((genreTag) => { %>
-                        <li><%= genreTag.name %></li>
-                        <% }) %>
-                        <!-- Format -->
-                        <% } %>
-                    </ul>
                     <div class="form-group">
                         <div class="similarity-slider">
+                            <h4>Genres / Tags</h4>
+                            <span>Current: </span>
+                            <ul>
+                                <% if (lastFm_genreTags.length == 0) { %>
+                                <li><i>None</i></li>
+                                <% } else { %>
+                                <!-- Format -->
+                                <% lastFm_genreTags.forEach((genreTag) => { %>
+                                <li><%= genreTag.name %></li>
+                                <% }) %>
+                                <!-- Format -->
+                                <% } %>
+                            </ul>
                             <label for="similaritySlider" class="form-label">
                                 <span>Recommended Similarity: </span>
                                 <span id="similaritySliderValue">100</span>%
@@ -68,9 +68,9 @@
                         </div>
                     </div>
 
-                    <h4>Popularity</h4>
-                    <span>Current: <%= spotify_trackDetails.popularity %> / 100</span>
                     <div class="form-group">
+                        <h4>Popularity</h4>
+                        <span>Current: <%= spotify_trackDetails.popularity %> / 100</span>
                         <div class="popularity-slider">
                             <label for="popularitySlider" class="form-label">
                                 <span>Recommended: </span>
@@ -78,6 +78,34 @@
                                 <span> / 100</span>
                             </label>
                             <input name="popularitySlider" id="popularitySlider" type="range" class="form-range" min="0" max="100" step="1" value="<%= spotify_trackDetails.popularity %>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <h4>WIP TODO: More params (e.g. date range for Release Year)</h4>
+                        <label for="dateRangeSlider" class="form-label">
+                            <span id="dateRangeSliderValue">2000</span>
+                        </label>
+                        <input name="dateRangeSlider" id="dateRangeSlider" type="range" class="form-range" min="1970" max="2025" step="1" value="2000" />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <h4>WIP TODO: More params (e.g. checkboxes for Moods)</h4>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="happy" id="moodHappy" />
+                            <label class="form-check-label" for="moodHappy">Happy</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="sad" id="moodSad" />
+                            <label class="form-check-label" for="moodSad">Sad</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="party" id="moodParty" />
+                            <label class="form-check-label" for="moodParty">Party</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="chill" id="moodChill" />
+                            <label class="form-check-label" for="moodChill">Chill</label>
                         </div>
                     </div>
 
@@ -149,12 +177,20 @@
             }
             attachSlider("similaritySlider", "similaritySliderValue");
             attachSlider("popularitySlider", "popularitySliderValue");
+            attachSlider("dateRangeSlider", "dateRangeSliderValue");
 
             function submitParams() {
                 let similarity = document.getElementById("similaritySlider").value;
                 let popularity = document.getElementById("popularitySlider").value;
+                let dateRange = document.getElementById("dateRangeSlider").value;
+                let moods = [];
+                ["Happy", "Sad", "Party", "Chill"].forEach((mood) => {
+                    let checkbox = document.getElementById("mood" + mood);
+                    if (checkbox.checked) moods.push(checkbox.value);
+                });
+
                 // Insert param values into URL
-                let newUrl = `${window.location.pathname}?similarity=${similarity}&popularity=${popularity}`;
+                let newUrl = `${window.location.pathname}?similarity=${similarity}&popularity=${popularity}&dateRange=${dateRange}&moods=${moods.join(",")}`;
                 window.location.href = newUrl;
             }
 
