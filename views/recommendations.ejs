@@ -8,12 +8,12 @@
         <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
         <title><%= locals.headTitle.pageName %><%= locals.headTitle.remainder %></title>
     </head>
-    <body class="container">
+    <body class="container mb-5 pb-5">
         <div class="this-will-be-navbar my-5 d-flex flex-column justify-content-center align-items-center">
             <h1><a href="/">NextTrack</a></h1>
         </div>
 
-        <div class="submitted-track-details">
+        <div class="submitted-track-details my-5">
             <h3>Track's Details</h3>
             <ul>
                 <li>Name: <%= spotify_trackDetails.name %></li>
@@ -43,9 +43,9 @@
 
                 <!-- Adding `autocomplete="off"` ensures slider (and other GUI) values are reset upon page refresh -->
                 <form id="customizeForm" autocomplete="off">
-                    <button type="button" class="btn btn-primary mb-3" onclick="submitParams()">Update Recommendations</button>
+                    <button type="button" class="btn btn-primary" onclick="submitParams()">Update Recommendations</button>
 
-                    <div class="form-group">
+                    <div class="form-group m-5">
                         <div class="similarity-slider">
                             <h4>Genres / Tags</h4>
                             <span>Current: </span>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group m-5">
                         <h4>Popularity</h4>
                         <span>Current: <%= spotify_trackDetails.popularity %> / 100</span>
                         <div class="popularity-slider">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group mb-4">
+                    <div class="form-group m-5">
                         <h4>WIP TODO: More params (e.g. date range for Release Year)</h4>
                         <label for="dateRangeSlider" class="form-label">
                             <span id="dateRangeSliderValue">2000</span>
@@ -89,7 +89,7 @@
                         <input name="dateRangeSlider" id="dateRangeSlider" type="range" class="form-range" min="1970" max="2025" step="1" value="2000" />
                     </div>
 
-                    <div class="form-group mb-4">
+                    <div class="form-group m-5">
                         <h4>WIP TODO: More params (e.g. checkboxes for Moods)</h4>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="happy" id="moodHappy" />
@@ -109,7 +109,7 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-primary mt-3" onclick="submitParams()">Update Recommendations</button>
+                    <button type="button" class="btn btn-primary" onclick="submitParams()">Update Recommendations</button>
                 </form>
             </div>
 
