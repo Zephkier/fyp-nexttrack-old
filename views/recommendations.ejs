@@ -37,17 +37,20 @@
             <div class="customise-your-recommendations col-md-6">
                 <h3>Customise Your Recommendations</h3>
                 <p>How similar do you want your recommendations to be?</p>
-                <!-- TODO: Double-click to reset slider's value -->
-                <!-- TODO: Upon page refresh (with trackID still in URL), the slider doesn't reset to default value -->
-                <!-- TODO: Upon form submission, put slider (and other param) values in URL via something like "?=" -->
-                <form>
+                <!--
+                TODO
+                Double-click to reset slider's value.
+                Upon form submission, put slider (and other param) values in URL via something like `?=`.
+                Then, with those `?=` in the URL, page refreshing will set it at that value.
+                -->
+
+                <!-- Adding `autocomplete="off"` ensures slider (and other GUI) values are reset upon page refresh -->
+                <form autocomplete="off">
                     <h4>Genres / Tags</h4>
                     <span>Current: </span>
                     <ul>
                         <% lastFm_genreTags.forEach((genreTag) => { %>
-                        <!-- Format -->
                         <li><%= genreTag.name %></li>
-                        <!-- Format -->
                         <% }) %>
                     </ul>
                     <div class="form-group">
@@ -77,8 +80,11 @@
 
             <div class="recommended-tracks col-md-6">
                 <h3>Recommended Tracks</h3>
-                <!-- TODO: End-goal is to apply the following section to each and every recommended track via a loop -->
-                <!-- For now, just focus on getting 1 dummy "recommended" (not really) track to work -->
+                <!--
+                TODO
+                End-goal is to apply the following section to each and every recommended track via a loop.
+                For now, just focus on getting 1 dummy "recommended" (not really) track to work.
+                -->
                 <div class="recommended-track">
                     <p>Title: abc</p>
                     <p>Artist: def</p>
@@ -105,19 +111,23 @@
         </div>
 
         <script>
-            function attachSlider(sliderId, valueId) {
-                let slider = document.getElementById(sliderId);
-                let value = document.getElementById(valueId);
-                if (slider && value) {
-                    // Set initial value
-                    value.textContent = slider.value;
-                    slider.addEventListener("input", () => {
+            // Add this `document.addEventListener()` to ensure slider (and other GUI) values are reset on page refresh
+            document.addEventListener("DOMContentLoaded", function () {
+                function attachSlider(sliderId, valueId) {
+                    let slider = document.getElementById(sliderId);
+                    let value = document.getElementById(valueId);
+                    if (slider && value) {
+                        // Set initial value
                         value.textContent = slider.value;
-                    });
+                        slider.addEventListener("input", () => {
+                            value.textContent = slider.value;
+                        });
+                    }
                 }
-            }
-            attachSlider("similaritySlider", "similaritySliderValue");
-            attachSlider("popularitySlider", "popularitySliderValue");
+
+                attachSlider("similaritySlider", "similaritySliderValue");
+                attachSlider("popularitySlider", "popularitySliderValue");
+            });
         </script>
     </body>
 </html>
