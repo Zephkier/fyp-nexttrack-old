@@ -9,11 +9,8 @@
         <title><%= locals.headTitle.pageName %><%= locals.headTitle.remainder %></title>
     </head>
     <body class="container">
-        <div class="navbar">
-            <a href="/">
-                <h1>NextTrack</h1>
-                <h2>Recommendations Page</h2>
-            </a>
+        <div class="this-will-be-navbar my-5 d-flex flex-column justify-content-center align-items-center">
+            <h1><a href="/">NextTrack</a></h1>
         </div>
 
         <div class="submitted-track-details">
@@ -49,9 +46,15 @@
                     <h4>Genres / Tags</h4>
                     <span>Current: </span>
                     <ul>
+                        <% if (lastFm_genreTags.length == 0) { %>
+                        <li><i>None</i></li>
+                        <% } else { %>
+                        <!-- Format -->
                         <% lastFm_genreTags.forEach((genreTag) => { %>
                         <li><%= genreTag.name %></li>
                         <% }) %>
+                        <!-- Format -->
+                        <% } %>
                     </ul>
                     <div class="form-group">
                         <div class="similarity-slider">
