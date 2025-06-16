@@ -139,10 +139,56 @@ router.get(`/recommendations/:spotify_trackID`, refreshSpotifyApiToken, async (r
         return response.redirect("/?error=cannotRetrieveTrackDataFromLastFm");
     }
 
+    let dummyRecommendedTracks = [
+        {
+            name: "Bohemian Rhapsody",
+            artist: "Queen",
+            link: {
+                spotify: "https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv?si=d402b163ddcb40b9",
+                appleMusic: "https://music.apple.com/us/song/bohemian-rhapsody/1440650711",
+                youtubeMusic: "https://music.youtube.com/watch?v=bSnlKl_PoQU&si=rizExhbi-h_Zog7w",
+            },
+            // Can try using the YouTube video that is already in Last.fm's "About" page)
+            video: "https://www.youtube.com/watch?v=fJ9rUzIMcZQ ",
+            lyrics: "https://genius.com/Queen-bohemian-rhapsody-lyrics",
+            about: {
+                // See <h4 class="ContributorSidebarSection__Title-sc-65fb4caa-8 htPphm">About</h4>
+                genius: "https://genius.com/Queen-bohemian-rhapsody-lyrics",
+                lastFm: "https://www.last.fm/music/Queen/_/Bohemian+Rhapsody+-+Remastered+2011/+wiki",
+            },
+            comments: {
+                genius: "https://genius.com/Queen-bohemian-rhapsody-lyrics#comments",
+                lastFm: "https://www.last.fm/music/Queen/_/Bohemian+Rhapsody+-+Remastered+2011#shoutbox",
+            },
+        },
+        {
+            name: "Yellow",
+            artist: "Coldplay",
+            link: {
+                spotify: "https://open.spotify.com/track/3AJwUDP919kvQ9QcozQPxg?si=d5ef72260b42406a",
+                appleMusic: "https://music.apple.com/us/song/yellow/1122782283",
+                youtubeMusic: "https://music.youtube.com/watch?v=9qnqYL0eNNI&si=wQ2XdteTSQePEOve",
+            },
+            // Can try using the YouTube video that is already in Last.fm's "About" page)
+            video: "https://www.youtube.com/watch?v=yKNxeF4KMsY",
+            lyrics: "https://genius.com/Queen-bohemian-rhapsody-lyrics",
+            about: {
+                // See <h4 class="ContributorSidebarSection__Title-sc-65fb4caa-8 htPphm">About</h4>
+                genius: "https://genius.com/Coldplay-yellow-lyrics",
+                lastFm: "https://www.last.fm/music/Coldplay/_/Yellow/+wiki",
+            },
+            comments: {
+                genius: "https://genius.com/Coldplay-yellow-lyrics#comments",
+                lastFm: "https://www.last.fm/music/Coldplay/_/Yellow#shoutbox",
+            },
+        },
+    ];
+
     return response.render("./recommendations.ejs", {
         pageName: response.locals.headTitle.pageName,
         spotify_trackDetails: spotify_trackData.body,
         lastFm_genreTags: lastFm_genreTags,
+        dummyRecommendedTracks: dummyRecommendedTracks,
     });
 });
 

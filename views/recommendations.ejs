@@ -42,7 +42,9 @@
                 -->
 
                 <!-- Adding `autocomplete="off"` ensures slider (and other GUI) values are reset upon page refresh -->
-                <form autocomplete="off">
+                <form id="customizeForm" autocomplete="off">
+                    <button type="button" class="btn btn-primary mb-3" onclick="submitParams()">Update Recommendations</button>
+
                     <h4>Genres / Tags</h4>
                     <span>Current: </span>
                     <ul>
@@ -78,59 +80,75 @@
                             <input name="popularitySlider" id="popularitySlider" type="range" class="form-range" min="0" max="100" step="1" value="<%= spotify_trackDetails.popularity %>" />
                         </div>
                     </div>
+
+                    <button type="button" class="btn btn-primary mt-3" onclick="submitParams()">Update Recommendations</button>
                 </form>
             </div>
 
             <div class="recommended-tracks col-md-6">
                 <h3>Recommended Tracks</h3>
-                <!--
-                TODO
-                End-goal is to apply the following section to each and every recommended track via a loop.
-                For now, just focus on getting 1 dummy "recommended" (not really) track to work.
-                -->
+                <% dummyRecommendedTracks.forEach(dummyRecommendedTrack => { %>
+                <!-- TODO: add spacing between each recommended track -->
                 <div class="recommended-track">
-                    <p>Title: abc</p>
-                    <p>Artist: def</p>
+                    <p>Name: <%= dummyRecommendedTrack.name %></p>
+                    <p>Artist: <%= dummyRecommendedTrack.artist %></p>
                     <p>
-                        Listen at:
-                        <button>Spotify</button>
-                        <button>Apple Music</button>
-                        <button>YouTube Music</button>
+                        Listen at
+                        <a class="btn btn-outline-success btn-sm" href="<%= dummyRecommendedTrack.link.spotify %>" target="_blank">Spotify</a>
+                        <a class="btn btn-outline-danger btn-sm" href="<%= dummyRecommendedTrack.link.appleMusic %>" target="_blank">Apple Music</a>
+                        <a class="btn btn-outline-warning btn-sm" href="<%= dummyRecommendedTrack.link.youtubeMusic %>" target="_blank">YouTube Music</a>
                     </p>
                     <p>
-                        Music Video:
-                        <br />*music video (either straight from YouTube, or the linked/embedded video on Last.fm's / Genius' page)*
+                        Music Video
+                        <br />
+                        <%= dummyRecommendedTrack.video %>
                     </p>
                     <p>
-                        Lyrics:
-                        <br />*lyrics from Genius*
+                        Lyrics
+                        <br />
+                        <%= dummyRecommendedTrack.lyrics %>
                     </p>
                     <p>
-                        "About" / Wiki Section:
-                        <br />*"about" section from Last.fm or Genius*
+                        About
+                        <br />
+                        From Genius: <%= dummyRecommendedTrack.about.genius %>
+                        <br />
+                        From Last.fm: <%= dummyRecommendedTrack.about.lastFm %>
+                    </p>
+                    <p>
+                        Comments
+                        <br />
+                        From Genius: <%= dummyRecommendedTrack.comments.genius %>
+                        <br />
+                        From Last.fm: <%= dummyRecommendedTrack.comments.lastFm %>
                     </p>
                 </div>
+                <% }); %>
             </div>
         </div>
 
         <script>
-            // Add this `document.addEventListener()` to ensure slider (and other GUI) values are reset on page refresh
-            document.addEventListener("DOMContentLoaded", function () {
-                function attachSlider(sliderId, valueId) {
-                    let slider = document.getElementById(sliderId);
-                    let value = document.getElementById(valueId);
-                    if (slider && value) {
-                        // Set initial value
+            function attachSlider(sliderId, valueId) {
+                let slider = document.getElementById(sliderId);
+                let value = document.getElementById(valueId);
+                if (slider && value) {
+                    // Set initial value
+                    value.textContent = slider.value;
+                    slider.addEventListener("input", () => {
                         value.textContent = slider.value;
-                        slider.addEventListener("input", () => {
-                            value.textContent = slider.value;
-                        });
-                    }
+                    });
                 }
+            }
+            attachSlider("similaritySlider", "similaritySliderValue");
+            attachSlider("popularitySlider", "popularitySliderValue");
 
-                attachSlider("similaritySlider", "similaritySliderValue");
-                attachSlider("popularitySlider", "popularitySliderValue");
-            });
+            function submitParams() {
+                let similarity = document.getElementById("similaritySlider").value;
+                let popularity = document.getElementById("popularitySlider").value;
+                // Insert param values into URL
+                let newUrl = `${window.location.pathname}?similarity=${similarity}&popularity=${popularity}`;
+                window.location.href = newUrl;
+            }
         </script>
     </body>
 </html>
