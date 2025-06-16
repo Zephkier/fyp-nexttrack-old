@@ -87,36 +87,49 @@
 
             <div class="recommended-tracks col-md-6">
                 <h3>Recommended Tracks</h3>
-                <% dummyRecommendedTracks.forEach(dummyRecommendedTrack => { %>
+
+                <% dummyRecommendedTracks.forEach((dummyRecommendedTrack, index) => { %>
                 <div class="recommended-track mb-5 p-4 border">
-                    <h4><%= dummyRecommendedTrack.name %></h4>
-                    <p>by <%= dummyRecommendedTrack.artist %></p>
-                    <p>
+                    <!-- Always visible -->
+                    <div class="toggle-header d-flex justify-content-between align-items-center" role="button" data-bs-toggle="collapse" data-bs-target="#collapseTrack<%= index %>" aria-expanded="false" aria-controls="collapseTrack<%= index %>">
+                        <div>
+                            <h4><%= dummyRecommendedTrack.name %></h4>
+                            <p>by <%= dummyRecommendedTrack.artist %></p>
+                        </div>
+                        <i class="bi bi-chevron-down chevron-icon"></i>
+                    </div>
+                    <div>
                         Listen at
                         <a class="btn btn-outline-success btn-sm" href="<%= dummyRecommendedTrack.link.spotify %>" target="_blank">Spotify</a>
                         <a class="btn btn-outline-danger btn-sm" href="<%= dummyRecommendedTrack.link.appleMusic %>" target="_blank">Apple Music</a>
                         <a class="btn btn-outline-warning btn-sm" href="<%= dummyRecommendedTrack.link.youtubeMusic %>" target="_blank">YouTube Music</a>
-                    </p>
-                    <p>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= dummyRecommendedTrack.link.video %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </p>
-                    <!-- TODO: Genius' embed defaults to light mode, try see if it can be manipulated to dark mode -->
-                    <div class="text-dark">
-                        <div id="rg_embed_link_1063" class="rg_embed_link" data-song-id="1063">HELLO</div>
-                        <script crossorigin src="//genius.com/songs/1063/embed.js"></script>
                     </div>
-                    <p>
-                        About from
-                        <a href="<%= dummyRecommendedTrack.about.genius %>">Genius</a>
-                        or
-                        <a href="<%= dummyRecommendedTrack.about.lastFm %>">Last.fm</a>.
-                    </p>
-                    <p>
-                        Comments from
-                        <a href="<%= dummyRecommendedTrack.comments.genius %>">Genius</a>
-                        or
-                        <a href="<%= dummyRecommendedTrack.comments.lastFm %>">Last.fm</a>.
-                    </p>
+
+                    <!-- Collapsible -->
+                    <div class="collapse mt-3" id="collapseTrack<%= index %>">
+                        <p>
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= dummyRecommendedTrack.link.video %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </p>
+                        <!-- NOTE: Temporarily put here because Genius' lyrics is huge -->
+                        <p>
+                            About:
+                            <a href="<%= dummyRecommendedTrack.about.genius %>">Genius</a>
+                            or
+                            <a href="<%= dummyRecommendedTrack.about.lastFm %>">Last.fm</a>.
+                        </p>
+                        <!-- NOTE: Temporarily put here because Genius' lyrics is huge -->
+                        <p>
+                            Comments:
+                            <a href="<%= dummyRecommendedTrack.comments.genius %>">Genius</a>
+                            or
+                            <a href="<%= dummyRecommendedTrack.comments.lastFm %>">Last.fm</a>.
+                        </p>
+                        <!-- TODO: Genius' embed defaults to light mode, try see if it can be manipulated to dark mode -->
+                        <div class="text-dark">
+                            <div id="rg_embed_link_1063" class="rg_embed_link" data-song-id="1063">HELLO</div>
+                            <script crossorigin src="//genius.com/songs/1063/embed.js"></script>
+                        </div>
+                    </div>
                 </div>
                 <% }); %>
             </div>
@@ -144,6 +157,22 @@
                 let newUrl = `${window.location.pathname}?similarity=${similarity}&popularity=${popularity}`;
                 window.location.href = newUrl;
             }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                document.querySelectorAll(".toggle-header").forEach((header) => {
+                    const chevron = header.querySelector(".chevron-icon");
+                    const targetId = header.getAttribute("data-bs-target");
+                    const collapseElem = document.querySelector(targetId);
+                    collapseElem.addEventListener("show.bs.collapse", () => {
+                        chevron.classList.remove("bi-chevron-down");
+                        chevron.classList.add("bi-chevron-up");
+                    });
+                    collapseElem.addEventListener("hide.bs.collapse", () => {
+                        chevron.classList.remove("bi-chevron-up");
+                        chevron.classList.add("bi-chevron-down");
+                    });
+                });
+            });
         </script>
     </body>
 </html>
