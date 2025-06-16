@@ -8,8 +8,8 @@
         <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
         <title><%= locals.headTitle.pageName %><%= locals.headTitle.remainder %></title>
     </head>
-    <body>
-        <div class="navbar" href="/">
+    <body class="container">
+        <div class="navbar">
             <a href="/">
                 <h1>NextTrack</h1>
                 <h2>Recommendations Page</h2>
@@ -33,78 +33,91 @@
             </ul>
         </div>
 
-        <div class="customise-recommendations">
-            <h3>Customise Your Recommendations</h3>
-            <p>How similar do you want your recommendations to be?</p>
-            <div class="genre-tags">
-                <h4>Genres / Tags</h4>
-                <ul>
-                    <% lastFm_genreTags.forEach((genreTag) => { %>
-                    <!-- Format -->
-                    <li><%= genreTag.name %></li>
-                    <!-- Format -->
-                    <% }) %>
-                </ul>
-
+        <div class="row">
+            <div class="customise-your-recommendations col-md-6">
+                <h3>Customise Your Recommendations</h3>
+                <p>How similar do you want your recommendations to be?</p>
                 <!-- TODO: Double-click to reset slider's value -->
-
-                <div class="similarity-slider">
-                    <label for="similaritySlider" class="form-label">
+                <!-- TODO: Upon page refresh (with trackID still in URL), the slider doesn't reset to default value -->
+                <!-- TODO: Upon form submission, put slider (and other param) values in URL via something like "?=" -->
+                <form>
+                    <h4>Genres / Tags</h4>
+                    <span>Current: </span>
+                    <ul>
+                        <% lastFm_genreTags.forEach((genreTag) => { %>
                         <!-- Format -->
-                        Similarity: <span id="similaritySliderValue">50</span>%
-                    </label>
-                    <input name="similaritySlider" id="similaritySlider" type="range" class="form-range" min="0" max="100" step="1" value="50" />
-                </div>
-
-                <div class="popularity-slider">
-                    <label for="popularitySlider" class="form-label">
+                        <li><%= genreTag.name %></li>
                         <!-- Format -->
-                        Popularity: <span id="popularitySliderValue"><%= spotify_trackDetails.popularity %></span> / 100
-                    </label>
-                    <input name="popularitySlider" id="popularitySlider" type="range" class="form-range" min="0" max="100" step="1" value="<%= spotify_trackDetails.popularity %>" />
+                        <% }) %>
+                    </ul>
+                    <div class="form-group">
+                        <div class="similarity-slider">
+                            <label for="similaritySlider" class="form-label">
+                                <span>Recommended Similarity: </span>
+                                <span id="similaritySliderValue">100</span>%
+                            </label>
+                            <input name="similaritySlider" id="similaritySlider" type="range" class="form-range" min="0" max="100" step="1" value="100" />
+                        </div>
+                    </div>
+
+                    <h4>Popularity</h4>
+                    <span>Current: <%= spotify_trackDetails.popularity %> / 100</span>
+                    <div class="form-group">
+                        <div class="popularity-slider">
+                            <label for="popularitySlider" class="form-label">
+                                <span>Recommended: </span>
+                                <span id="popularitySliderValue"><%= spotify_trackDetails.popularity %></span>
+                                <span> / 100</span>
+                            </label>
+                            <input name="popularitySlider" id="popularitySlider" type="range" class="form-range" min="0" max="100" step="1" value="<%= spotify_trackDetails.popularity %>" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="recommended-tracks col-md-6">
+                <h3>Recommended Tracks</h3>
+                <!-- TODO: End-goal is to apply the following section to each and every recommended track via a loop -->
+                <!-- For now, just focus on getting 1 dummy "recommended" (not really) track to work -->
+                <div class="recommended-track">
+                    <p>Title: abc</p>
+                    <p>Artist: def</p>
+                    <p>
+                        Listen at:
+                        <button>Spotify</button>
+                        <button>Apple Music</button>
+                        <button>YouTube Music</button>
+                    </p>
+                    <p>
+                        Music Video:
+                        <br />*music video (either straight from YouTube, or the linked/embedded video on Last.fm's / Genius' page)*
+                    </p>
+                    <p>
+                        Lyrics:
+                        <br />*lyrics from Genius*
+                    </p>
+                    <p>
+                        "About" / Wiki Section:
+                        <br />*"about" section from Last.fm or Genius*
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="recommended-tracks">
-            <h3>Recommended Tracks</h3>
-
-            <!-- TODO: End-goal is to apply this part for each and every recommended track via a loop -->
-            <!-- For now, just focus on getting 1 (fake) "recommended track" to work -->
-
-            <p>Title: abc</p>
-            <p>Artist: def</p>
-            <p>
-                Listen at:
-                <button>Spotify</button>
-                <button>Apple Music</button>
-                <button>YouTube Music</button>
-            </p>
-            <p>
-                Music Video:
-                <br />*music video (either straight from YouTube, or the linked/embedded video on Last.fm's / Genius' page)*
-            </p>
-            <p>
-                Lyrics:
-                <br />*lyrics from Genius*
-            </p>
-            <p>
-                "About" / Wiki Section:
-                <br />*"about" section from Last.fm or Genius*
-            </p>
-        </div>
-
         <script>
-            let similaritySlider = document.getElementById("similaritySlider");
-            let similaritySliderValue = document.getElementById("similaritySliderValue");
-            similaritySlider.addEventListener("input", () => {
-                similaritySliderValue.textContent = similaritySlider.value;
-            });
-            let popularitySlider = document.getElementById("popularitySlider");
-            let popularitySliderValue = document.getElementById("popularitySliderValue");
-            popularitySlider.addEventListener("input", () => {
-                popularitySliderValue.textContent = popularitySlider.value;
-            });
+            function attachSlider(sliderId, valueId) {
+                let slider = document.getElementById(sliderId);
+                let value = document.getElementById(valueId);
+                if (slider && value) {
+                    // Set initial value
+                    value.textContent = slider.value;
+                    slider.addEventListener("input", () => {
+                        value.textContent = slider.value;
+                    });
+                }
+            }
+            attachSlider("similaritySlider", "similaritySliderValue");
+            attachSlider("popularitySlider", "popularitySliderValue");
         </script>
     </body>
 </html>
