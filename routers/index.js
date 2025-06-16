@@ -61,8 +61,8 @@ router.get("/", refreshSpotifyApiToken, (request, response) => {
 router.post("/recommendations", (request, response) => {
     try {
         // Get track's ID from submitted track link
-        // i.e. from: "https[colon]//open.spotify.com/track/6z7dQwXh9UJJl4wsWxexuI?si=308467749bd94d0d"
-        //        to:                                      "6z7dQwXh9UJJl4wsWxexuI"
+        // From "https[colon]//open.spotify.com/track/6z7dQwXh9UJJl4wsWxexuI?si=308467749bd94d0d"
+        // To                                        "6z7dQwXh9UJJl4wsWxexuI"
         let spotify_trackID = request.body.spotify_trackLink // Format
             .split("track/")[1]
             .split("?si=")[0];
@@ -147,9 +147,11 @@ router.get(`/recommendations/:spotify_trackID`, refreshSpotifyApiToken, async (r
                 spotify: "https://open.spotify.com/track/4u7EnebtmKWzUH433cf5Qv?si=d402b163ddcb40b9",
                 appleMusic: "https://music.apple.com/us/song/bohemian-rhapsody/1440650711",
                 youtubeMusic: "https://music.youtube.com/watch?v=bSnlKl_PoQU&si=rizExhbi-h_Zog7w",
+                // Can try using the YouTube video that is already in Last.fm's "About" page)
+                // From "https://www.youtube.com/watch?v=fJ9rUzIMcZQ"
+                // To                                   "fJ9rUzIMcZQ"
+                video: "fJ9rUzIMcZQ",
             },
-            // Can try using the YouTube video that is already in Last.fm's "About" page)
-            video: "https://www.youtube.com/watch?v=fJ9rUzIMcZQ ",
             lyrics: "https://genius.com/Queen-bohemian-rhapsody-lyrics",
             about: {
                 // See <h4 class="ContributorSidebarSection__Title-sc-65fb4caa-8 htPphm">About</h4>
@@ -168,9 +170,11 @@ router.get(`/recommendations/:spotify_trackID`, refreshSpotifyApiToken, async (r
                 spotify: "https://open.spotify.com/track/3AJwUDP919kvQ9QcozQPxg?si=d5ef72260b42406a",
                 appleMusic: "https://music.apple.com/us/song/yellow/1122782283",
                 youtubeMusic: "https://music.youtube.com/watch?v=9qnqYL0eNNI&si=wQ2XdteTSQePEOve",
+                // Can try using the YouTube video that is already in Last.fm's "About" page)
+                // From "https://www.youtube.com/watch?v=yKNxeF4KMsY"
+                // To                                   "yKNxeF4KMsY"
+                video: "yKNxeF4KMsY",
             },
-            // Can try using the YouTube video that is already in Last.fm's "About" page)
-            video: "https://www.youtube.com/watch?v=yKNxeF4KMsY",
             lyrics: "https://genius.com/Queen-bohemian-rhapsody-lyrics",
             about: {
                 // See <h4 class="ContributorSidebarSection__Title-sc-65fb4caa-8 htPphm">About</h4>
