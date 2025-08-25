@@ -1,10 +1,14 @@
-# Access this Application (easy)
+# Accessing The Application
 
-Visit https://fyp-nexttrack.vercel.app
+## Online (easy)
 
-# Access this Application Locally (troublesome)
+Visit https://fyp-nexttrack-old.vercel.app.
 
-Ensure you have a `.env` file with the following variables:
+## Locally (hard)
+
+1. [Clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) this repository into your local machine.
+
+2. Ensure there is a `.env` file at the root directory (i.e. `./.env`) with the following variables and their respective values:
 
 ```
 SPOTIFY_CLIENT_ID
@@ -15,16 +19,11 @@ GENIUS_CLIENT_ID
 GENIUS_CLIENT_SECRET
 ```
 
-After cloning this repository, in terminal, run:
+3. Open the terminal to the root directory (i.e. `./`), and run:
 
 ```
 npm i
-```
-
-Then run:
-
-```
 npm run start
 ```
 
-And visit the `localhost` link provided.
+4. Visit the `localhost` link provided.
